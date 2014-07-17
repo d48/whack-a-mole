@@ -19,3 +19,7 @@ heroku open
 
 # Status
 Work in progress
+
+# Todo
+* create `emit` method to set event name as in `ws.emit('boom', {data: 'boom'});`
+* begin whack-a-mole game and object state setup
