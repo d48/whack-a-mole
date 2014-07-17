@@ -10,6 +10,6 @@
     "npm": "1.2.x"
   },
   "scripts": {
-    "start": "node index.js"
+    "start": "node server.js"
   }
 }
