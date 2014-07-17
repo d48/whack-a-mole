@@ -23,5 +23,8 @@ heroku open
 Work in progress
 
 # Todo
+* deploy to Heroku with custom url so everyone can hit
 * create `emit` method to set event name as in `ws.emit('boom', {data: 'boom'});`
+* broadcast user count on `connection.close`
 * begin whack-a-mole game and object state setup
+
