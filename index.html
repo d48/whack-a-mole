@@ -1,0 +1,70 @@
+<html>
+    <head>
+        <style>
+            body {
+                font-family: "Helvetica Neue", helvetica, arial;
+                padding: 15px;
+            }
+
+            ul {
+                list-style: none;
+                margin: 0;
+                padding: 0;
+            }
+
+            ul li {
+                line-height: 1.4;
+            }
+        </style>
+
+    </head>
+    <body>
+        <h1>Whack-A-Mole!!!!</h1>
+        <p>Your whacky id is: WHACKY_MOFO_<span id="userId"></span></p>
+        <p>Number of users connected: <span id="numUsers"></span></p>
+        <button id="mybtn">Whack!</button>
+        <ul id='events'></ul>
+
+        <script>
+            var btn = document.querySelector('#mybtn');
+            var userId = document.querySelector('#userId');
+            var numUsers = document.querySelector('#numUsers');
+            var events = document.querySelector('#events');
+
+            var host = location.origin.replace(/^http/, 'ws')
+            var ws = new WebSocket(host);
+
+            var user = '';
+            var thisUserId;
+
+            userId.innerHTML = thisUserId = (new Date()).getTime();
+
+            ws.onmessage = function (event) {
+                var oData = JSON.parse(event.data);
+                var type = oData.type;
+                var message = oData.message;
+                var aUserId = oData.userId;
+
+                switch (type) {
+                    case 'connected':
+                        numUsers.innerHTML  = message;
+                        break;
+                    case 'whack:received':
+                        var li = document.createElement('li');
+                        li.innerHTML = message;
+                        events.insertBefore(li, events.firstChild);
+                    default:
+                        break;
+                }
+            };
+
+            btn.addEventListener('click', function() {
+                ws.send(JSON.stringify({
+                    type: "whack"
+                    , message: "user is whacking you"
+                    , userId: thisUserId
+                }));
+            });
+        </script>
+    </body>
+</html>
