@@ -28,8 +28,7 @@ wss.broadcast = function(event, data) {
     }
 };
 
-
-
+// upon connection
 wss.on("connection", function(ws) {
     console.log('websocket connection opened');
     users++;
@@ -46,6 +45,7 @@ wss.on("connection", function(ws) {
         , userId = oData.userId
         ;
 
+        // parse message
         switch(type) {
             case 'whack':
                 wss.broadcast('whack:received', {

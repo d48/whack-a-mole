@@ -8,6 +8,18 @@
     , user = ''
     , thisUserId
     , strUserPrefix = 'WHACKY_MOFO_'
+    , strDisconnected = 'Some user disconnected'
+    , strWhackSuffix = ' is whacking you!'
+
+    // helper functions
+    , showMessage = function(msg) {
+        var li = document.createElement('li');
+        li.innerHTML = msg;
+        events.insertBefore(li, events.firstChild);
+    }
+    , updateUserCount = function(num) {
+        numUsers.innerHTML = num;
+    }
     ;
 
     userId.innerHTML = thisUserId = (new Date()).getTime();
@@ -20,6 +32,7 @@
         }));
     };
 
+    // parse broadcast message from server
     ws.onmessage = function (event) {
         var oData = JSON.parse(event.data)
         , type = oData.type
@@ -29,18 +42,14 @@
 
         switch (type) {
             case 'connected':
-                numUsers.innerHTML  = message;
+                updateUserCount(message);
                 break;
             case 'disconnected':
-                numUsers.innerHTML  = message;
-                var li = document.createElement('li');
-                li.innerHTML = 'some user has been disconnected';
-                events.insertBefore(li, events.firstChild);
+                updateUserCount(message);
+                showMessage(strDisconnected);
                 break;
             case 'whack:received':
-                var li = document.createElement('li');
-                li.innerHTML = message;
-                events.insertBefore(li, events.firstChild);
+                showMessage(message);
             default:
                 break;
         }
@@ -48,7 +57,7 @@
 
     btn.addEventListener('click', function() {
         ws.emit('whack', {
-            message: strUserPrefix + thisUserId + " is whacking you!"
+            message: strUserPrefix + thisUserId + strWhackSuffix
             , userId: thisUserId
         });
     });
