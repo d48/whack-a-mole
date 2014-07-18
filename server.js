@@ -39,8 +39,15 @@ wss.on("connection", function(ws) {
 
     // main listener
     ws.on('message', function(data, flags) {
-        var oData = JSON.parse(data)
-        , type = oData.type
+        var oData;
+        try {
+            oData = JSON.parse(data);
+        } catch (e) {
+            console.error('mad errors yo', e);
+            return;
+        }
+
+        var type = oData.type
         , message = oData.message
         , userId = oData.userId
         ;
