@@ -7,6 +7,7 @@
     , ws = new WebSocket(host)
     , user = ''
     , thisUserId
+    , strUserPrefix = 'WHACKY_MOFO_'
     ;
 
     userId.innerHTML = thisUserId = (new Date()).getTime();
@@ -47,7 +48,7 @@
 
     btn.addEventListener('click', function() {
         ws.emit('whack', {
-            message: "user is whacking you"
+            message: strUserPrefix + thisUserId + " is whacking you!"
             , userId: thisUserId
         });
     });

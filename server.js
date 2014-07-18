@@ -31,14 +31,12 @@ wss.broadcast = function(event, data) {
 
 
 wss.on("connection", function(ws) {
+    console.log('websocket connection opened');
     users++;
-
     wss.broadcast('connected', {
         message: users
         , userId: null
     });
-
-    console.log("websocket connection open");
 
     // main listener
     ws.on('message', function(data, flags) {
@@ -51,7 +49,7 @@ wss.on("connection", function(ws) {
         switch(type) {
             case 'whack':
                 wss.broadcast('whack:received', {
-                    message: 'WHACKY_MOFO_' + userId +  ' is whacking you!'
+                    message: message
                     , userId: userId
                 });
                 break;
@@ -61,7 +59,7 @@ wss.on("connection", function(ws) {
     });
 
     ws.on("close", function() {
-        console.log("websocket connection close");
+        console.log("websocket connection closed");
         users--;
         wss.broadcast('disconnected', {
             message: users
