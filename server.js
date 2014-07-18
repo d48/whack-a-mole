@@ -1,24 +1,23 @@
-var WebSocketServer = require("ws").Server;
-var http = require("http");
-var express = require("express");
-var app = express();
-var port = process.env.PORT || 5000;
+var WebSocketServer = require("ws").Server
+, http = require("http")
+, express = require("express")
+, app = express()
+, port = process.env.PORT || 5000
+, server
+, users = 0
+, wss
+;
 
 app.use(express.static(__dirname + "/"));
-
-var server = http.createServer(app);
+server = http.createServer(app);
 server.listen(port);
 
 console.log("http server listening on %d", port);
-
-
-var users = 0;
-
-var wss = new WebSocketServer({server: server});
+wss = new WebSocketServer({server: server});
 console.log("websocket server created");
 
 
-
+// utility functions
 wss.broadcast = function(data) {
     for(var i in this.clients) {
         this.clients[i].send(data);
@@ -38,10 +37,11 @@ wss.on("connection", function(ws) {
 
     // main listener
     ws.on('message', function(data, flags) {
-        var oData = JSON.parse(data);
-        var type = oData.type;
-        var message = oData.message;
-        var userId = oData.userId
+        var oData = JSON.parse(data)
+        , type = oData.type
+        , message = oData.message
+        , userId = oData.userId
+        ;
 
         switch(type) {
             case 'whack':
@@ -59,6 +59,5 @@ wss.on("connection", function(ws) {
     ws.on("close", function() {
         console.log("websocket connection close");
         users--;
-        // clearInterval(id)
     });
 });
