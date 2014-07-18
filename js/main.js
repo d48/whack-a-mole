@@ -34,8 +34,15 @@
 
     // parse broadcast message from server
     ws.onmessage = function (event) {
-        var oData = JSON.parse(event.data)
-        , type = oData.type
+        var oData;
+        try {
+            oData = JSON.parse(event.data);
+        } catch (e) {
+            console.error('mad errors yo', e);
+            return;
+        }
+
+        var type = oData.type
         , message = oData.message
         , aUserId = oData.userId
         ;
