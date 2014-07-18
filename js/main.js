@@ -1,20 +1,23 @@
 (function() {
     var btn = document.querySelector('#mybtn')
     , userId = document.querySelector('#userId')
+    , elUserPrefix = document.querySelector('#userPrefix')
     , numUsers = document.querySelector('#numUsers')
     , events = document.querySelector('#events')
     , host = location.origin.replace(/^http/, 'ws')
     , ws = new WebSocket(host)
     , user = ''
     , thisUserId
-    , strUserPrefix = 'WHACKY_MOFO_'
+    , strClassPrefix = 'whack--'
+    , strUserPrefix = 'Player: '
     , strDisconnected = 'Some user disconnected'
     , strWhackSuffix = ' is whacking you!'
 
     // helper functions
-    , showMessage = function(msg) {
+    , logEvent = function(msg) {
         var li = document.createElement('li');
         li.innerHTML = msg;
+        li.className = strClassPrefix + 'event-log';
         events.insertBefore(li, events.firstChild);
     }
     , updateUserCount = function(num) {
@@ -23,6 +26,7 @@
     ;
 
     userId.innerHTML = thisUserId = (new Date()).getTime();
+    elUserPrefix.innerHTML = strUserPrefix;
 
     ws.emit = function (event, data) {
         this.send(JSON.stringify({
@@ -53,10 +57,10 @@
                 break;
             case 'disconnected':
                 updateUserCount(message);
-                showMessage(strDisconnected);
+                logEvent(strDisconnected);
                 break;
             case 'whack:received':
-                showMessage(message);
+                logEvent(message);
             default:
                 break;
         }

@@ -18,3 +18,46 @@ ul li {
     line-height: 1.4;
     margin-bottom: 20px;
 }
+
+@-webkit-keyframes background-fade {
+    0% {
+        background:#ececec;
+    }
+    100% {
+        background:#fff;
+    }
+}
+@-moz-background-fade {
+    0% {
+        background:#ececec;
+    }
+    100% {
+        background:#fff;
+    }
+}
+
+
+@keyframes background-fade {
+    0% {
+        background:#ececec;
+    }
+    100% {
+        background:#fff;
+    }
+}
+
+
+
+.whack--event-log {
+    border-radius: 3px;
+    padding: 4px;
+    animation: background-fade 1s forwards;
+    -webkit-animation: background-fade 1s forwards;
+    -moz-animation: background-fade 1s forwards;
+}
+
+
+
+
+
+
