@@ -11,11 +11,11 @@
 
     userId.innerHTML = thisUserId = (new Date()).getTime();
 
-    ws.emit = function (event, opts) {
+    ws.emit = function (event, data) {
         this.send(JSON.stringify({
             type: event
-            , message: opts.message || null
-            , userId: opts.userId || null
+            , message: data.message || null
+            , userId: data.userId || null
         }));
     };
 
@@ -29,6 +29,12 @@
         switch (type) {
             case 'connected':
                 numUsers.innerHTML  = message;
+                break;
+            case 'disconnected':
+                numUsers.innerHTML  = message;
+                var li = document.createElement('li');
+                li.innerHTML = 'some user has been disconnected';
+                events.insertBefore(li, events.firstChild);
                 break;
             case 'whack:received':
                 var li = document.createElement('li');

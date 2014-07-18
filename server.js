@@ -18,20 +18,25 @@ console.log("websocket server created");
 
 
 // utility functions
-wss.broadcast = function(data) {
+wss.broadcast = function(event, data) {
     for(var i in this.clients) {
-        this.clients[i].send(data);
+        this.clients[i].send(JSON.stringify({
+            type: event
+            , message: data.message || null
+            , userId: data.userId || null
+        }));
     }
 };
+
+
 
 wss.on("connection", function(ws) {
     users++;
 
-    wss.broadcast(JSON.stringify({
-        type: 'connected',
-        message: users,
-        userId: null
-    }));
+    wss.broadcast('connected', {
+        message: users
+        , userId: null
+    });
 
     console.log("websocket connection open");
 
@@ -45,11 +50,10 @@ wss.on("connection", function(ws) {
 
         switch(type) {
             case 'whack':
-                wss.broadcast(JSON.stringify({
-                    type: 'whack:received',
-                    userId: userId,
+                wss.broadcast('whack:received', {
                     message: 'WHACKY_MOFO_' + userId +  ' is whacking you!'
-                }));
+                    , userId: userId
+                });
                 break;
             default:
                 break;
@@ -59,5 +63,9 @@ wss.on("connection", function(ws) {
     ws.on("close", function() {
         console.log("websocket connection close");
         users--;
+        wss.broadcast('disconnected', {
+            message: users
+            , userId: null
+        });
     });
 });
