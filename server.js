@@ -1,10 +1,15 @@
 var WebSocketServer = require("ws").Server
+, Game = require("./server/js/WhackGame.js")()
 , http = require("http")
 , express = require("express")
 , app = express()
 , port = process.env.PORT || 5000
 , server
 , users = 0
+, _bGameStarted = false
+, _sGameAlreadyStarted = 'Game has already started'
+, _gState = Game.state
+, _gMessages = Game.messages
 , wss
 ;
 
@@ -16,8 +21,23 @@ console.log("http server listening on %d", port);
 wss = new WebSocketServer({server: server});
 console.log("websocket server created");
 
-
-// utility functions
+/**
+ * Broadcasts message to all clients connected
+ * @name broadcast
+ * @param {string} event - determines what type should be set to for client
+ * @param {object} data - object for what to send to client
+ * @param {string} data.message - message to send to client
+ * @param {number} data.userId - unique id of client
+ * @returns {void} - sends WebSocket message to all clients connected
+ * @example 
+ *      wss.broadcast('hit', {
+ *          message: 'user has been hit'
+ *          , userId: 14514513143
+ *      });
+ * @method 
+ * @memberof wss
+ * @author Ryan Regalado 
+ */
 wss.broadcast = function(event, data) {
     for(var i in this.clients) {
         this.clients[i].send(JSON.stringify({
@@ -54,11 +74,13 @@ wss.on("connection", function(ws) {
 
         // parse message
         switch(type) {
-            case 'whack':
-                wss.broadcast('whack:received', {
+            case 'game:start':
+                message = !_gState.bGameStarted ? Game.init() : _gMessages.sGameAlreadyStarted;
+                wss.broadcast('game:started', {
                     message: message
                     , userId: userId
                 });
+                _gState.bGameStarted = true;
                 break;
             default:
                 break;

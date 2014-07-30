@@ -23,9 +23,9 @@
     , updateUserCount = function(num) {
         numUsers.innerHTML = num;
     }
+    , game = window.game = new Game()
     ;
 
-    userId.innerHTML = thisUserId = (new Date()).getTime();
     elUserPrefix.innerHTML = strUserPrefix;
 
     ws.emit = function (event, data) {
@@ -59,7 +59,7 @@
                 updateUserCount(message);
                 logEvent(strDisconnected);
                 break;
-            case 'whack:received':
+            case 'game:started':
                 logEvent(message);
             default:
                 break;
@@ -67,7 +67,7 @@
     };
 
     btn.addEventListener('click', function() {
-        ws.emit('whack', {
+        ws.emit('game:start', {
             message: strUserPrefix + thisUserId + strWhackSuffix
             , userId: thisUserId
         });
