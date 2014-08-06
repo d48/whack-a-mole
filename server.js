@@ -10,6 +10,7 @@ var WebSocketServer = require("ws").Server
 , _sGameAlreadyStarted = 'Game has already started'
 , _gState = Game.state
 , _gMessages = Game.messages
+, _gDefaults = Game.defaults
 , wss
 ;
 
@@ -52,6 +53,15 @@ wss.broadcast = function(event, data) {
 wss.on("connection", function(ws) {
     console.log('websocket connection opened');
     users++;
+
+    if (_gState.bGameStarted) {
+        ws.send(JSON.stringify({
+            type: 'default'
+            , message: 'already started, initing the game on the client'
+            , userId: null
+        }));
+    }
+
     wss.broadcast('connected', {
         message: users
         , userId: null
@@ -75,9 +85,16 @@ wss.on("connection", function(ws) {
         // parse message
         switch(type) {
             case 'game:start':
-                message = !_gState.bGameStarted ? Game.init() : _gMessages.sGameAlreadyStarted;
+                // @todo make call to game but let the game manage the state instead of this 
+                //       server file
+                var str = !_gState.bGameStarted ? Game.init() : _gMessages.sGameAlreadyStarted
+                    , obj = {
+                        str: str 
+                        , defaults: _gDefaults
+                    }
+                ;
                 wss.broadcast('game:started', {
-                    message: message
+                    message: obj
                     , userId: userId
                 });
                 _gState.bGameStarted = true;

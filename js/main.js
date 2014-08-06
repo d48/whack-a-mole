@@ -23,7 +23,12 @@
     , updateUserCount = function(num) {
         numUsers.innerHTML = num;
     }
-    , game = window.game = new Game()
+    , game = null
+    , is = { 
+        'defined': function(obj) {
+            return typeof obj !== 'undefined';
+        }
+    }
     ;
 
     elUserPrefix.innerHTML = strUserPrefix;
@@ -60,7 +65,14 @@
                 logEvent(strDisconnected);
                 break;
             case 'game:started':
+                logEvent(message.str);
+                if (!game) {
+                    game = new Game().init({defaults: message.defaults});
+                }
+                break;
+            case 'default':
                 logEvent(message);
+                break;
             default:
                 break;
         }

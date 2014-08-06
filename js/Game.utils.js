@@ -1,18 +1,5 @@
-var WhackGame = function() {
-    var
-        state = {
-            bGameStarted: false
-        }
-        , messages = {
-            sGameAlreadyStarted: 'Game has already started'
-        }
-        , defaults = {
-            rows: 4 
-            , columns: 7
-            , timer: 20
-        }
-        , setup = {}
-
+(function() {
+    var Utils = {
         /**
          * Merge object b into a
          * 
@@ -25,10 +12,10 @@ var WhackGame = function() {
          * merge({a: 1}, {b: 2}); // returns {a: 2, b:2} 
          * merge({a: 1}, {b: 2}); // returns {a: 2, b:2} 
          * @method 
-         * @memberof WhackGame
+         * @memberof Game
          * @author Ryan Regalado 
          */
-        , merge = function(a,b) {
+         merge: function(a,b) {
             if (a && b) {
                 for (var key in b) {
                     if (b.hasOwnProperty(key)) {
@@ -40,19 +27,8 @@ var WhackGame = function() {
             }
             return a;
         }
-    ;
+    };
 
-    function init(opts) {
-        console.log('initing the game');
-        return 'starting the game';
-    }
+    window.Utils = Utils;
+})();
 
-    return {
-        init: init
-        , state: state
-        , messages: messages
-        , defaults: defaults
-    }
-};
-
-module.exports = WhackGame;
