@@ -78,8 +78,7 @@ wss.on("connection", function(ws) {
         try {
             oData = JSON.parse(data);
         } catch (e) {
-            console.error('mad errors yo', e);
-            return;
+            return console.error('mad errors yo', e);
         }
 
         var type = oData.type
