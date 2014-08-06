@@ -55,9 +55,14 @@ wss.on("connection", function(ws) {
     users++;
 
     if (_gState.bGameStarted) {
+        var obj = {
+            str: _gMessages.sGameAlreadyStarted
+            , defaults: _gDefaults
+        };
+
         ws.send(JSON.stringify({
-            type: 'default'
-            , message: 'already started, initing the game on the client'
+            type: 'game:started'
+            , message: obj
             , userId: null
         }));
     }
