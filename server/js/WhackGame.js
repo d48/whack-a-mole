@@ -17,8 +17,18 @@ var WhackGame = function() {
 
         // in seconds
         , timer = {
-            start: function(time) {
-                console.log('starting timer', time);        
+            // time in seconds
+            start: function(interval) {
+                console.log('starting timer', interval);        
+
+                var interval = interval || 0, intervalId;
+
+                // every second, check the interval
+                // intervalId = setInterval(function() {
+                //     this.clock = interval;
+                //     interval--;
+                // }, 1000);
+
             }
             , stop: function() {
 
@@ -54,8 +64,22 @@ var WhackGame = function() {
             return a;
         }
 
+
+        /**
+         * Merge options with defaults to be used in object lifecycle
+         * 
+         * @name setupDefaults
+         * @param {object} opts - options for game
+         * @returns {object} this.defaults - width, height, timer 
+         * @method 
+         * @memberof WhackGame
+         * @author Ryan Regalado <ryan.regalado@blackline.com>
+         */
         , setupDefaults = function(opts) {
-            this.defaults = merge(this.defaults, opts);
+            return this.defaults = merge(this.defaults, opts);
+        }
+        , getTimer = function() {
+            return this.clock;
         }
     ;
 
@@ -64,8 +88,10 @@ var WhackGame = function() {
         var time
             , opts = opts || {}
         ;
-        setupDefaults.call(this, opts);
-        timer.start(this.defaults.timer);
+        // setupDefaults.call(this, opts);
+
+        this.defaults = merge(this.defaults, opts);
+        timer.start.call(this, this.defaults.timer);
         this.state.bGameStarted = true;
 
         return 'starting the game';
@@ -77,6 +103,7 @@ var WhackGame = function() {
         , messages: messages
         , defaults: defaults
         , setupDefaults: setupDefaults
+        , getTimer: getTimer
     }
 };
 

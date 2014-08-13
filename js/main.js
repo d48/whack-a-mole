@@ -1,5 +1,6 @@
 (function() {
     var btn           = document.querySelector('#mybtn')
+    , elTimer         = document.querySelector('#timer')
     , userId          = document.querySelector('#userId')
     , elUserPrefix    = document.querySelector('#userPrefix')
     , numUsers        = document.querySelector('#numUsers')
@@ -30,6 +31,7 @@
         }
     }
     , _clickHandle = function() {
+        console.log('clicking');
         ws.emit('game:start', {
             message: strUserPrefix + thisUserId + strWhackSuffix
             , userId: thisUserId
@@ -43,6 +45,7 @@
     }
     , disableButton = function() {
         btn.setAttribute('disabled', 'true');
+        btn.className = 'disabled';
     }
     ;
 
@@ -87,6 +90,8 @@
                     game = new Game().init({defaults: message.defaults});
                     removeListeners(); 
                     disableButton();
+                    // will just receive tick event from server
+                    elTimer.innerText = message.defaults.timer;                    
                 }
                 break;
             case 'default':

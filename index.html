@@ -4,12 +4,39 @@
     </head>
     <body>
         <h1>Whack-A-Mole!!!!</h1>
-        <p>You are <span id="userPrefix"></span><span id="userId"></span></p>
-        <p>Number of players connected: <span id="numUsers"></span></p>
+        <table id="console">
+            <tr>
+                <td>
+                    You are <span id="userPrefix"></span>
+                </td>
+                <td>
+                    <span id="userId"></span>
+                </td>
+                <td rowspan="3">
+                    <h2 id="event-log">Event Log</h2>
+                    <ul id='events'></ul>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Number of players connected: 
+                </td>
+                <td>
+                    <span id="numUsers"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Timer
+                </td>
+                <td>
+                    <span id="timer">Not set yet</span>
+                </td>
+            </tr>
+
+        </table>
         <button id="mybtn">Start Game</button>
 
-        <h2>Event Log</h2>
-        <ul id='events'></ul>
 
         <div id="game"></div>
 

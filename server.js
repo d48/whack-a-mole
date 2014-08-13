@@ -1,19 +1,20 @@
-var WebSocketServer = require("ws").Server
-, Game = require("./server/js/WhackGame.js")()
-, http = require("http")
-, express = require("express")
-, app = express()
-, port = process.env.PORT || 5000
+var WebSocketServer    = require("ws").Server
+, Game                 = require("./server/js/WhackGame.js")()
+, http                 = require("http")
+, express              = require("express")
+, app                  = express()
+, port                 = process.env.PORT || 5000
 , server
-, users = 0
-, _bGameStarted = false
+, users                = 0
+, _bGameStarted        = false
 , _sGameAlreadyStarted = 'Game has already started'
 
-// this references the object, event when it updates.
-// oka to check against
-, _gState = Game.state
-, _gMessages = Game.messages
-, _gDefaults = Game.defaults
+// this references the object, event when it updates. okay to check against
+, _gState              = Game.state
+, _gMessages           = Game.messages
+, _gDefaults           = Game.defaults
+, _nClock              = Game.clock
+, _nIntervalId
 , wss
 ;
 
@@ -92,9 +93,18 @@ wss.on("connection", function(ws) {
         // parse message
         switch(type) {
             case 'game:start':
-                var str, obj;
+                var str, obj, nCurrTime;
                 if (!_gState.bGameStarted) {
                     str = Game.init();
+
+                    // add interval for broadcasting time state
+                    _nIntervalId = setInterval(function() {
+                        nCurrTime = Game.getTimer(); 
+                        wss.broadcast('game:tick', {
+                            message: nCurrTime
+                            , userId: null
+                        });
+                    }, 1000);
                 } else {
                     str = _gMessages.sGameAlreadyStarted;
                 }
@@ -108,6 +118,7 @@ wss.on("connection", function(ws) {
                     message: obj
                     , userId: userId
                 });
+
                 break;
             case 'mole:hit':
                 break;
