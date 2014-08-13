@@ -1,17 +1,17 @@
 (function() {
-    var btn = document.querySelector('#mybtn')
-    , userId = document.querySelector('#userId')
-    , elUserPrefix = document.querySelector('#userPrefix')
-    , numUsers = document.querySelector('#numUsers')
-    , events = document.querySelector('#events')
-    , host = location.origin.replace(/^http/, 'ws')
-    , ws = new WebSocket(host)
-    , user = ''
+    var btn           = document.querySelector('#mybtn')
+    , userId          = document.querySelector('#userId')
+    , elUserPrefix    = document.querySelector('#userPrefix')
+    , numUsers        = document.querySelector('#numUsers')
+    , events          = document.querySelector('#events')
+    , host            = location.origin.replace(/^http/, 'ws')
+    , ws              = new WebSocket(host)
+    , user            = ''
     , thisUserId
-    , strClassPrefix = 'whack--'
-    , strUserPrefix = 'Player: '
+    , strClassPrefix  = 'whack--'
+    , strUserPrefix   = 'Player: '
     , strDisconnected = 'Some user disconnected'
-    , strWhackSuffix = ' is whacking you!'
+    , strWhackSuffix  = ' is whacking you!'
 
     // helper functions
     , logEvent = function(msg) {
@@ -28,6 +28,21 @@
         'defined': function(obj) {
             return typeof obj !== 'undefined';
         }
+    }
+    , _clickHandle = function() {
+        ws.emit('game:start', {
+            message: strUserPrefix + thisUserId + strWhackSuffix
+            , userId: thisUserId
+        });
+    }
+    , addListeners = function() {
+        btn.addEventListener('click', _clickHandle);
+    }
+    , removeListeners = function() {
+        btn.removeEventListener('click', _clickHandle);
+    }
+    , disableButton = function() {
+        btn.setAttribute('disabled', 'true');
     }
     ;
 
@@ -59,6 +74,8 @@
         switch (type) {
             case 'connected':
                 updateUserCount(message);
+                thisUserId = Date.now();
+                userId.innerText = thisUserId;
                 break;
             case 'disconnected':
                 updateUserCount(message);
@@ -68,6 +85,8 @@
                 logEvent(message.str);
                 if (!game) {
                     game = new Game().init({defaults: message.defaults});
+                    removeListeners(); 
+                    disableButton();
                 }
                 break;
             case 'default':
@@ -78,11 +97,7 @@
         }
     };
 
-    btn.addEventListener('click', function() {
-        ws.emit('game:start', {
-            message: strUserPrefix + thisUserId + strWhackSuffix
-            , userId: thisUserId
-        });
-    });
+    addListeners();
+
 })();
 

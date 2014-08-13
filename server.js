@@ -8,6 +8,9 @@ var WebSocketServer = require("ws").Server
 , users = 0
 , _bGameStarted = false
 , _sGameAlreadyStarted = 'Game has already started'
+
+// this references the object, event when it updates.
+// oka to check against
 , _gState = Game.state
 , _gMessages = Game.messages
 , _gDefaults = Game.defaults
@@ -89,19 +92,26 @@ wss.on("connection", function(ws) {
         // parse message
         switch(type) {
             case 'game:start':
-                // @todo make call to game but let the game manage the state instead of this 
-                //       server file
-                var str = !_gState.bGameStarted ? Game.init() : _gMessages.sGameAlreadyStarted
-                    , obj = {
-                        str: str 
-                        , defaults: _gDefaults
-                    }
-                ;
+                var str, obj;
+                if (!_gState.bGameStarted) {
+                    str = Game.init();
+                } else {
+                    str = _gMessages.sGameAlreadyStarted;
+                }
+
+                obj = {
+                    str: str 
+                    , defaults: _gDefaults
+                };
+
                 wss.broadcast('game:started', {
                     message: obj
                     , userId: userId
                 });
-                _gState.bGameStarted = true;
+                break;
+            case 'mole:hit':
+                break;
+            case 'mole:miss':
                 break;
             default:
                 break;

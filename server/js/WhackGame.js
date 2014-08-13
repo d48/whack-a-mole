@@ -1,6 +1,7 @@
 var WhackGame = function() {
     var
-        state = {
+        self = this
+        , state = {
             bGameStarted: false
         }
         , messages = {
@@ -9,9 +10,21 @@ var WhackGame = function() {
         , defaults = {
             rows: 4 
             , columns: 7
-            , timer: 20
+            , timer: 20 
         }
         , setup = {}
+        , clock
+
+        // in seconds
+        , timer = {
+            start: function(time) {
+                console.log('starting timer', time);        
+            }
+            , stop: function() {
+
+            }
+        }
+
 
         /**
          * Merge object b into a
@@ -40,10 +53,21 @@ var WhackGame = function() {
             }
             return a;
         }
+
+        , setupDefaults = function(opts) {
+            this.defaults = merge(this.defaults, opts);
+        }
     ;
 
+    // initialize game
     function init(opts) {
-        console.log('initing the game');
+        var time
+            , opts = opts || {}
+        ;
+        setupDefaults.call(this, opts);
+        timer.start(this.defaults.timer);
+        this.state.bGameStarted = true;
+
         return 'starting the game';
     }
 
@@ -52,6 +76,7 @@ var WhackGame = function() {
         , state: state
         , messages: messages
         , defaults: defaults
+        , setupDefaults: setupDefaults
     }
 };
 
